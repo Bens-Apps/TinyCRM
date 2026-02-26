@@ -66,7 +66,7 @@ export default async function ProjectDetailPage({
                     <Badge variant="outline">{task.priority}</Badge>
                   )}
                   {task.contact && (
-                    <Badge variant="secondary">{task.contact.name}</Badge>
+                    <Badge variant="secondary">{task.contact.firstName} {task.contact.lastName}</Badge>
                   )}
                 </div>
               </div>

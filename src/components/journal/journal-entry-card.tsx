@@ -53,9 +53,6 @@ export function JournalEntryCard({ entry, onEdit }: JournalEntryCardProps) {
                 <Badge variant="outline">{entry.contact.name}</Badge>
               )}
             </div>
-            {entry.title && (
-              <h3 className="mt-1 font-semibold">{entry.title}</h3>
-            )}
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

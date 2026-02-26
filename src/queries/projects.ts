@@ -23,7 +23,7 @@ export async function getProject(userId: string, id: string) {
       tasks: {
         orderBy: [{ status: "asc" }, { sortOrder: "asc" }],
         include: {
-          contact: { select: { id: true, name: true } },
+          contact: { select: { id: true, firstName: true, lastName: true } },
         },
       },
     },

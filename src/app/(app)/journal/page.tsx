@@ -10,9 +10,9 @@ export default async function JournalPage() {
     getJournalEntries(user.id!),
     prisma.contact.findMany({
       where: { userId: user.id! },
-      select: { id: true, name: true },
-      orderBy: { name: "asc" },
-    }),
+      select: { id: true, firstName: true, lastName: true },
+      orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
+    }).then(contacts => contacts.map(c => ({ id: c.id, name: `${c.firstName} ${c.lastName}`.trim() }))),
   ]);
 
   return (

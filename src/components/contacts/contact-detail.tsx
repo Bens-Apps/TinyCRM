@@ -13,12 +13,14 @@ import { JournalForm } from "@/components/journal/journal-form";
 import { JournalEntryCard } from "@/components/journal/journal-entry-card";
 import { TaskStatusToggle } from "@/components/tasks/task-status-toggle";
 import { TaskPriorityBadge } from "@/components/tasks/task-status-badge";
+import { TaskForm } from "@/components/tasks/task-form";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { MarkdownRenderer } from "@/components/shared/markdown-renderer";
+import { ContactEmails } from "./contact-emails";
 import { deleteContact } from "@/actions/contacts";
 import { toast } from "sonner";
-import type { Contact, RelationshipType, JournalEntry, Task } from "@prisma/client";
+import type { Contact, RelationshipType, JournalEntry, Task, Area, Project } from "@prisma/client";
 
 type FullContact = Contact & {
   relationshipType: RelationshipType | null;
@@ -29,12 +31,15 @@ type FullContact = Contact & {
 interface ContactDetailProps {
   contact: FullContact;
   relationshipTypes: { id: string; name: string; color: string | null }[];
+  areas: Pick<Area, "id" | "name">[];
+  projects: Pick<Project, "id" | "name" | "areaId">[];
 }
 
-export function ContactDetail({ contact, relationshipTypes }: ContactDetailProps) {
+export function ContactDetail({ contact, relationshipTypes, areas, projects }: ContactDetailProps) {
   const router = useRouter();
   const [editOpen, setEditOpen] = useState(false);
   const [journalFormOpen, setJournalFormOpen] = useState(false);
+  const [taskFormOpen, setTaskFormOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -61,7 +66,7 @@ export function ContactDetail({ contact, relationshipTypes }: ContactDetailProps
       <div className="mb-6 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold">{contact.name}</h1>
+            <h1 className="text-2xl font-bold">{contact.firstName} {contact.lastName}</h1>
             {contact.relationshipType && (
               <RelationshipBadge name={contact.relationshipType.name} color={contact.relationshipType.color} />
             )}
@@ -114,6 +119,7 @@ export function ContactDetail({ contact, relationshipTypes }: ContactDetailProps
         <TabsList>
           <TabsTrigger value="journal">Journal ({contact.journalEntries.length})</TabsTrigger>
           <TabsTrigger value="tasks">Tasks ({contact.tasks.length})</TabsTrigger>
+          <TabsTrigger value="emails">Emails</TabsTrigger>
         </TabsList>
 
         <TabsContent value="journal" className="mt-4">
@@ -125,15 +131,18 @@ export function ContactDetail({ contact, relationshipTypes }: ContactDetailProps
           ) : (
             <div className="space-y-3">
               {contact.journalEntries.map((entry) => (
-                <JournalEntryCard key={entry.id} entry={{ ...entry, contact: { id: contact.id, name: contact.name } }} />
+                <JournalEntryCard key={entry.id} entry={{ ...entry, contact: { id: contact.id, name: `${contact.firstName} ${contact.lastName}`.trim() } }} />
               ))}
             </div>
           )}
         </TabsContent>
 
         <TabsContent value="tasks" className="mt-4">
+          <div className="mb-4">
+            <Button onClick={() => setTaskFormOpen(true)} size="sm">Add Task</Button>
+          </div>
           {contact.tasks.length === 0 ? (
-            <EmptyState title="No tasks" description="Tasks linked to this contact will appear here." />
+            <EmptyState title="No tasks" description="Create a follow-up or reminder for this contact." />
           ) : (
             <div className="space-y-2">
               {contact.tasks.map((task) => (
@@ -142,7 +151,12 @@ export function ContactDetail({ contact, relationshipTypes }: ContactDetailProps
                     <TaskStatusToggle taskId={task.id} status={task.status} />
                     <span className={task.status === "DONE" ? "line-through text-muted-foreground" : ""}>{task.title}</span>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex items-center gap-2">
+                    {task.dueDate && (
+                      <span className="text-xs text-muted-foreground">
+                        Due {new Date(task.dueDate).toLocaleDateString()}
+                      </span>
+                    )}
                     <TaskPriorityBadge priority={task.priority} />
                     {task.project && <Badge variant="outline">{task.project.name}</Badge>}
                   </div>
@@ -151,15 +165,20 @@ export function ContactDetail({ contact, relationshipTypes }: ContactDetailProps
             </div>
           )}
         </TabsContent>
+
+        <TabsContent value="emails" className="mt-4">
+          <ContactEmails contactEmail={contact.email} contactName={`${contact.firstName} ${contact.lastName}`.trim()} />
+        </TabsContent>
       </Tabs>
 
       <ContactForm open={editOpen} onOpenChange={setEditOpen} contact={contact} relationshipTypes={relationshipTypes} />
       <JournalForm open={journalFormOpen} onOpenChange={setJournalFormOpen} contactId={contact.id} contacts={[]} />
+      <TaskForm open={taskFormOpen} onOpenChange={setTaskFormOpen} contactId={contact.id} areas={areas} projects={projects} contacts={[]} />
       <ConfirmDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         title="Delete Contact"
-        description={`Are you sure you want to delete "${contact.name}"? Journal entries will be unlinked.`}
+        description={`Are you sure you want to delete "${contact.firstName} ${contact.lastName}"? Journal entries will be unlinked.`}
         confirmLabel="Delete"
         variant="destructive"
         onConfirm={handleDelete}

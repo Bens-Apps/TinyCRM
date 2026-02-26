@@ -7,7 +7,7 @@ import { TaskCard } from "./task-card";
 import { TaskForm } from "./task-form";
 import { TaskFilters } from "./task-filters";
 import { EmptyState } from "@/components/shared/empty-state";
-import type { Area, Project, Contact } from "@prisma/client";
+import type { Area, Project } from "@prisma/client";
 
 type TaskWithRelations = {
   id: string;
@@ -19,14 +19,14 @@ type TaskWithRelations = {
   tags: string | null;
   project: { id: string; name: string } | null;
   area: { id: string; name: string; color: string | null } | null;
-  contact: { id: string; name: string } | null;
+  contact: { id: string; firstName: string; lastName: string } | null;
 };
 
 interface TaskListProps {
   tasks: TaskWithRelations[];
   areas: Pick<Area, "id" | "name">[];
   projects: Pick<Project, "id" | "name" | "areaId">[];
-  contacts: Pick<Contact, "id" | "name">[];
+  contacts: { id: string; name: string }[];
   groupBy: string;
 }
 

@@ -10,4 +10,6 @@ export interface CalendarEvent {
   conferenceData?: {
     entryPoints?: { entryPointType: string; uri: string }[];
   };
+  calendarColor?: string;
+  calendarName?: string;
 }

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { JournalEntryCard } from "./journal-entry-card";
 import { JournalForm } from "./journal-form";
 import { EmptyState } from "@/components/shared/empty-state";
-import type { JournalEntry, Contact } from "@prisma/client";
+import type { JournalEntry } from "@prisma/client";
 
 type EntryWithContact = JournalEntry & {
   contact: { id: string; name: string } | null;
@@ -14,7 +14,7 @@ type EntryWithContact = JournalEntry & {
 
 interface JournalListProps {
   entries: EntryWithContact[];
-  contacts: Pick<Contact, "id" | "name">[];
+  contacts: { id: string; name: string }[];
 }
 
 export function JournalList({ entries, contacts }: JournalListProps) {

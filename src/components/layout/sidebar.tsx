@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  LayoutDashboard,
   CalendarDays,
+  Mail,
   Users,
   BookOpen,
   CheckSquare,
@@ -21,7 +23,9 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 const navItems = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/calendar", label: "Calendar", icon: CalendarDays },
+  { href: "/inbox", label: "Inbox", icon: Mail },
   { href: "/crm", label: "Contacts", icon: Users },
   { href: "/journal", label: "Journal", icon: BookOpen },
   { href: "/tasks", label: "Tasks", icon: CheckSquare },
@@ -79,7 +83,7 @@ export function Sidebar({ user }: SidebarProps) {
         )}
       >
         <div className="flex h-14 items-center border-b border-border px-5">
-          <Link href="/calendar" className="text-lg font-bold text-primary">
+          <Link href="/dashboard" className="text-lg font-bold text-primary">
             TinyCRM
           </Link>
         </div>

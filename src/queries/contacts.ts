@@ -8,14 +8,15 @@ export async function getContacts(userId: string, filters?: { search?: string; r
       ...(filters?.search
         ? {
             OR: [
-              { name: { contains: filters.search, mode: "insensitive" as const } },
+              { firstName: { contains: filters.search, mode: "insensitive" as const } },
+              { lastName: { contains: filters.search, mode: "insensitive" as const } },
               { email: { contains: filters.search, mode: "insensitive" as const } },
               { company: { contains: filters.search, mode: "insensitive" as const } },
             ],
           }
         : {}),
     },
-    orderBy: { name: "asc" },
+    orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
     include: {
       relationshipType: { select: { id: true, name: true, color: true } },
     },

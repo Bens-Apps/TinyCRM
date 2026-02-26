@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { startOfDay, endOfDay, endOfWeek, startOfWeek, addWeeks } from "date-fns";
+import { startOfDay, endOfDay, endOfWeek, startOfWeek, addWeeks, addDays } from "date-fns";
 
 interface TaskFilters {
   status?: string;
@@ -46,7 +46,7 @@ export async function getTasks(userId: string, filters?: TaskFilters) {
     include: {
       project: { select: { id: true, name: true } },
       area: { select: { id: true, name: true, color: true } },
-      contact: { select: { id: true, name: true } },
+      contact: { select: { id: true, firstName: true, lastName: true } },
     },
   });
 }
@@ -65,6 +65,42 @@ export async function getTodayTasks(userId: string) {
     orderBy: { sortOrder: "asc" },
     include: {
       project: { select: { id: true, name: true } },
+      contact: { select: { id: true, firstName: true, lastName: true } },
+    },
+  });
+}
+
+export async function getOverdueTasks(userId: string) {
+  const now = new Date();
+  return prisma.task.findMany({
+    where: {
+      userId,
+      status: { not: "DONE" },
+      dueDate: { lt: startOfDay(now) },
+    },
+    orderBy: { dueDate: "asc" },
+    include: {
+      project: { select: { id: true, name: true } },
+      contact: { select: { id: true, firstName: true, lastName: true } },
+    },
+  });
+}
+
+export async function getUpcomingTasks(userId: string) {
+  const now = new Date();
+  return prisma.task.findMany({
+    where: {
+      userId,
+      status: { not: "DONE" },
+      OR: [
+        { dueDate: { gt: endOfDay(now), lte: endOfDay(addDays(now, 7)) } },
+        { scheduledDate: { gt: endOfDay(now), lte: endOfDay(addDays(now, 7)) } },
+      ],
+    },
+    orderBy: { dueDate: "asc" },
+    include: {
+      project: { select: { id: true, name: true } },
+      contact: { select: { id: true, firstName: true, lastName: true } },
     },
   });
 }

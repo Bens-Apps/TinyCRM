@@ -2,7 +2,6 @@
 
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -20,14 +19,14 @@ import {
 } from "@/components/ui/select";
 import { createJournalEntry, updateJournalEntry } from "@/actions/journal";
 import { toast } from "sonner";
-import type { JournalEntry, Contact } from "@prisma/client";
+import type { JournalEntry } from "@prisma/client";
 
 interface JournalFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   entry?: JournalEntry | null;
   contactId?: string;
-  contacts: Pick<Contact, "id" | "name">[];
+  contacts: { id: string; name: string }[];
 }
 
 export function JournalForm({ open, onOpenChange, entry, contactId, contacts }: JournalFormProps) {
@@ -56,11 +55,6 @@ export function JournalForm({ open, onOpenChange, entry, contactId, contacts }: 
         </DialogHeader>
         <form action={action} className="space-y-4">
           <div>
-            <Label htmlFor="title">Title (optional)</Label>
-            <Input id="title" name="title" defaultValue={entry?.title ?? ""} />
-          </div>
-          <div>
-            <Label htmlFor="content">Content</Label>
             <Textarea
               id="content"
               name="content"

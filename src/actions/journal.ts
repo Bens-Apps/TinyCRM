@@ -29,9 +29,9 @@ export async function createJournalEntry(formData: FormData): Promise<ActionResu
     userId: user.id!,
     entityType: "JournalEntry",
     entityId: entry.id,
-    entityName: entry.title ?? "Journal Entry",
+    entityName: entry.content.slice(0, 50),
     action: "created",
-    description: `Created journal entry "${entry.title ?? "Untitled"}"`,
+    description: `Created journal entry`,
   });
 
   revalidatePath("/journal");
@@ -61,9 +61,9 @@ export async function updateJournalEntry(formData: FormData): Promise<ActionResu
     userId: user.id!,
     entityType: "JournalEntry",
     entityId: entry.id,
-    entityName: entry.title ?? "Journal Entry",
+    entityName: entry.content.slice(0, 50),
     action: "updated",
-    description: `Updated journal entry "${entry.title ?? "Untitled"}"`,
+    description: `Updated journal entry`,
   });
 
   revalidatePath("/journal");
@@ -81,9 +81,9 @@ export async function deleteJournalEntry(id: string): Promise<ActionResult> {
     userId: user.id!,
     entityType: "JournalEntry",
     entityId: id,
-    entityName: entry.title ?? "Journal Entry",
+    entityName: entry.content.slice(0, 50),
     action: "deleted",
-    description: `Deleted journal entry "${entry.title ?? "Untitled"}"`,
+    description: `Deleted journal entry`,
   });
 
   revalidatePath("/journal");

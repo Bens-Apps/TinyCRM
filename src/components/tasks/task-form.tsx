@@ -21,7 +21,7 @@ import {
 import { createTask, updateTask } from "@/actions/tasks";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import type { Task, Area, Project, Contact } from "@prisma/client";
+import type { Task, Area, Project } from "@prisma/client";
 
 interface TaskFormProps {
   open: boolean;
@@ -29,18 +29,20 @@ interface TaskFormProps {
   task?: Task | null;
   areas: Pick<Area, "id" | "name">[];
   projects: Pick<Project, "id" | "name" | "areaId">[];
-  contacts: Pick<Contact, "id" | "name">[];
+  contacts: { id: string; name: string }[];
+  contactId?: string;
 }
 
 function dateStr(d: Date | null | undefined): string {
   return d ? format(d, "yyyy-MM-dd") : "";
 }
 
-export function TaskForm({ open, onOpenChange, task, areas, projects, contacts }: TaskFormProps) {
+export function TaskForm({ open, onOpenChange, task, areas, projects, contacts, contactId }: TaskFormProps) {
   const isEditing = !!task;
 
   async function handleSubmit(_prev: unknown, formData: FormData) {
     if (task) formData.set("id", task.id);
+    if (contactId && !formData.get("contactId")) formData.set("contactId", contactId);
     const result = await (isEditing ? updateTask(formData) : createTask(formData));
     if (result.success) {
       toast.success(isEditing ? "Task updated" : "Task created");
@@ -133,17 +135,19 @@ export function TaskForm({ open, onOpenChange, task, areas, projects, contacts }
             </Select>
           </div>
 
-          <div>
-            <Label>Contact</Label>
-            <Select name="contactId" defaultValue={task?.contactId ?? ""}>
-              <SelectTrigger><SelectValue placeholder="None" /></SelectTrigger>
-              <SelectContent>
-                {contacts.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {!contactId && (
+            <div>
+              <Label>Contact</Label>
+              <Select name="contactId" defaultValue={task?.contactId ?? ""}>
+                <SelectTrigger><SelectValue placeholder="None" /></SelectTrigger>
+                <SelectContent>
+                  {contacts.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div>
             <Label htmlFor="tags">Tags</Label>

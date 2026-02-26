@@ -5,7 +5,8 @@ import { RelationshipBadge } from "./relationship-badge";
 interface ContactCardProps {
   contact: {
     id: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string | null;
     phone: string | null;
     company: string | null;
@@ -21,7 +22,7 @@ export function ContactCard({ contact }: ContactCardProps) {
     >
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="font-medium">{contact.name}</span>
+          <span className="font-medium">{contact.firstName} {contact.lastName}</span>
           {contact.relationshipType && (
             <RelationshipBadge name={contact.relationshipType.name} color={contact.relationshipType.color} />
           )}

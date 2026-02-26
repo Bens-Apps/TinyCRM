@@ -43,6 +43,8 @@ export async function createTask(formData: FormData): Promise<ActionResult<Task>
   });
 
   revalidatePath("/tasks");
+  revalidatePath("/dashboard");
+  if (task.contactId) revalidatePath(`/crm/${task.contactId}`);
   return { success: true, data: task };
 }
 
@@ -79,6 +81,8 @@ export async function updateTask(formData: FormData): Promise<ActionResult<Task>
   });
 
   revalidatePath("/tasks");
+  revalidatePath("/dashboard");
+  if (task.contactId) revalidatePath(`/crm/${task.contactId}`);
   return { success: true, data: task };
 }
 
@@ -109,6 +113,8 @@ export async function updateTaskStatus(id: string, status: string): Promise<Acti
   });
 
   revalidatePath("/tasks");
+  revalidatePath("/dashboard");
+  if (task.contactId) revalidatePath(`/crm/${task.contactId}`);
   return { success: true, data: task };
 }
 
@@ -129,5 +135,7 @@ export async function deleteTask(id: string): Promise<ActionResult> {
   });
 
   revalidatePath("/tasks");
+  revalidatePath("/dashboard");
+  if (task.contactId) revalidatePath(`/crm/${task.contactId}`);
   return { success: true, data: undefined };
 }

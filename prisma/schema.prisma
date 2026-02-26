@@ -68,12 +68,14 @@ model User {
   activityLogs      ActivityLog[]
   relationshipTypes RelationshipType[]
   tags              Tag[]
+  userCalendars     UserCalendar[]
 }
 
 model Contact {
   id                 String            @id @default(cuid())
   userId             String
-  name               String
+  firstName          String
+  lastName           String            @default("")
   email              String?
   phone              String?
   linkedinUrl        String?
@@ -89,7 +91,7 @@ model Contact {
   tasks              Task[]
 
   @@index([userId])
-  @@index([userId, name])
+  @@index([userId, lastName, firstName])
   @@index([relationshipTypeId])
 }
 
@@ -112,7 +114,6 @@ model JournalEntry {
   id        String   @id @default(cuid())
   userId    String
   contactId String?
-  title     String?
   content   String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -223,6 +224,19 @@ model Tag {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, name])
+  @@index([userId])
+}
+
+model UserCalendar {
+  id         String  @id @default(cuid())
+  userId     String
+  calendarId String
+  name       String
+  color      String  @default("#4285f4")
+  enabled    Boolean @default(true)
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, calendarId])
   @@index([userId])
 }
 

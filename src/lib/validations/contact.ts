@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 export const createContactSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100),
+  firstName: z.string().min(1, "First name is required").max(50),
+  lastName: z.string().max(50).optional().default(""),
   email: z.string().email().optional().or(z.literal("")),
   phone: z.string().max(30).optional(),
   linkedinUrl: z.string().url().optional().or(z.literal("")),

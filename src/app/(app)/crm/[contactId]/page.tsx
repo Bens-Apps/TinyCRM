@@ -12,12 +12,22 @@ export default async function ContactDetailPage({
   const user = await requireAuth();
   const { contactId } = await params;
 
-  const [contact, relationshipTypes] = await Promise.all([
+  const [contact, relationshipTypes, areas, projects] = await Promise.all([
     getContact(user.id!, contactId),
     prisma.relationshipType.findMany({
       where: { userId: user.id! },
       orderBy: { sortOrder: "asc" },
       select: { id: true, name: true, color: true },
+    }),
+    prisma.area.findMany({
+      where: { userId: user.id! },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true },
+    }),
+    prisma.project.findMany({
+      where: { userId: user.id! },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true, areaId: true },
     }),
   ]);
 
@@ -25,7 +35,7 @@ export default async function ContactDetailPage({
 
   return (
     <div className="p-6">
-      <ContactDetail contact={contact} relationshipTypes={relationshipTypes} />
+      <ContactDetail contact={contact} relationshipTypes={relationshipTypes} areas={areas} projects={projects} />
     </div>
   );
 }

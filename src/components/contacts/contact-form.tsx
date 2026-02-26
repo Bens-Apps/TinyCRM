@@ -53,9 +53,15 @@ export function ContactForm({ open, onOpenChange, contact, relationshipTypes }: 
           <DialogTitle>{isEditing ? "Edit Contact" : "New Contact"}</DialogTitle>
         </DialogHeader>
         <form action={action} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" name="name" defaultValue={contact?.name ?? ""} required />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="firstName">First Name</Label>
+              <Input id="firstName" name="firstName" defaultValue={contact?.firstName ?? ""} required />
+            </div>
+            <div>
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input id="lastName" name="lastName" defaultValue={contact?.lastName ?? ""} />
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>

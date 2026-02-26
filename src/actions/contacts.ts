@@ -31,9 +31,9 @@ export async function createContact(formData: FormData): Promise<ActionResult<Co
     userId: user.id!,
     entityType: "Contact",
     entityId: contact.id,
-    entityName: contact.name,
+    entityName: `${contact.firstName} ${contact.lastName}`.trim(),
     action: "created",
-    description: `Created contact "${contact.name}"`,
+    description: `Created contact "${`${contact.firstName} ${contact.lastName}`.trim()}"`,
   });
 
   revalidatePath("/crm");
@@ -64,9 +64,9 @@ export async function updateContact(formData: FormData): Promise<ActionResult<Co
     userId: user.id!,
     entityType: "Contact",
     entityId: contact.id,
-    entityName: contact.name,
+    entityName: `${contact.firstName} ${contact.lastName}`.trim(),
     action: "updated",
-    description: `Updated contact "${contact.name}"`,
+    description: `Updated contact "${`${contact.firstName} ${contact.lastName}`.trim()}"`,
   });
 
   revalidatePath("/crm");
@@ -85,9 +85,9 @@ export async function deleteContact(id: string): Promise<ActionResult> {
     userId: user.id!,
     entityType: "Contact",
     entityId: id,
-    entityName: contact.name,
+    entityName: `${contact.firstName} ${contact.lastName}`.trim(),
     action: "deleted",
-    description: `Deleted contact "${contact.name}"`,
+    description: `Deleted contact "${`${contact.firstName} ${contact.lastName}`.trim()}"`,
   });
 
   revalidatePath("/crm");

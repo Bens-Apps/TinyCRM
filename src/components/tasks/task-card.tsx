@@ -18,7 +18,7 @@ interface TaskCardProps {
     tags: string | null;
     project: { id: string; name: string } | null;
     area: { id: string; name: string; color: string | null } | null;
-    contact: { id: string; name: string } | null;
+    contact: { id: string; firstName: string; lastName: string } | null;
   };
   onClick?: () => void;
 }
@@ -53,7 +53,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
               {task.area.name}
             </span>
           )}
-          {task.contact && <Badge variant="outline" className="text-xs">{task.contact.name}</Badge>}
+          {task.contact && <Badge variant="outline" className="text-xs">{task.contact.firstName} {task.contact.lastName}</Badge>}
           {tags.map((tag) => (
             <Badge key={tag} variant="secondary" className="text-xs">{tag.trim()}</Badge>
           ))}
